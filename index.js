@@ -15,3 +15,5 @@ const fluent = ({ methods, executors, defaults }) => () => {
 
   return res
 }
+
+export default fluent
