@@ -19,21 +19,21 @@ import fluent from "schematic-fluent"
 
 const createFetch = fluent({
   methods: {
-    from: url => ({ url: `/${url}` }),
-    get: url => ({ method: "GET", url }),
-    post: url => ({ method: "POST", url }),
-    put: url => ({ method: "PUT", url }),
-    delete: url => ({ method: "DELETE", url }),
-    paginate: (page, limit) => ({ page, limit })
+    from: () => url => ({ url: `/${url}` }),
+    get: () => url => ({ method: "GET", url }),
+    post: () => url => ({ method: "POST", url }),
+    put: () => url => ({ method: "PUT", url }),
+    delete: () => url => ({ method: "DELETE", url }),
+    paginate: () => (page, limit) => ({ page, limit })
   },
   executors: {
-    getOne: (id, { url, method }) => 
+    getOne: ({ url, method }) => id => 
       fetch(`${url}/${id}`, { method: "GET" }),
 
-    getAll: ({ url, page, limit }) =>
+    getAll: ({ url, page, limit }) => () =>
       fetch(`${url}?page=${page}&limit=${limit}`),
 
-    execute: (body, { url, method }) => 
+    execute: ({ url, method }) =>  body =>
       fetch(url, { method, body })
   },
   defaults: () => ({
@@ -60,8 +60,6 @@ It adds method to the instance that will return executor result
 ##### Defaults
 
 Function that declares default context. It's optional parameter
-
-> **NOTE:** both methods and executors accept context as additional last argument.
 
 ### Use instance
 
