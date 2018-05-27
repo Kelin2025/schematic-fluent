@@ -13,6 +13,8 @@ const fluent = ({ methods, executors, defaults }) => () => {
     res[method] = (...args) => cb(...args, ctx)
   }
 
+  res.getContext = () => ({ ... ctx })
+
   return res
 }
 
