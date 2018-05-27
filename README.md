@@ -61,6 +61,8 @@ It adds method to the instance that will return executor result
 
 Function that declares default context. It's optional parameter
 
+> **NOTE:** both methods and executors accepts context as additional last argument.
+
 ### Use instance
 
 ```js
