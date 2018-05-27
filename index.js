@@ -13,7 +13,14 @@ const fluent = ({ methods, executors, defaults }) => () => {
     res[method] = (...args) => cb(...args, ctx)
   }
 
-  res.getContext = () => ({ ... ctx })
+  res.getContext = () => ({ ...ctx })
+
+  res.clone = () =>
+    fluent({
+      methods,
+      executors,
+      defaults: res.getContext
+    })
 
   return res
 }
