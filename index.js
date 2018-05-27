@@ -1,4 +1,4 @@
-const fluent = ({ methods, executors, defaults }) => smth => {
+const fluent = ({ methods, executors, defaults }) => () => {
   const ctx = defaults ? defaults() : {}
   const res = {}
 

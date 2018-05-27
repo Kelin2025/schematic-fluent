@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/kelin2025/schematic-fluent",
   "author": "Anton Kosykh <kelin2025@yandex.ru>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "flow-bin": "^0.73.0"
+  }
 }
