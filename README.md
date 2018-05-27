@@ -19,7 +19,7 @@ import fluent from "schematic-fluent"
 
 const createFetch = fluent({
   methods: {
-    from: url => ({ url }),
+    from: url => ({ url: `/${url}` }),
     get: url => ({ method: "GET", url }),
     post: url => ({ method: "POST", url }),
     put: url => ({ method: "PUT", url }),
@@ -45,7 +45,7 @@ const createFetch = fluent({
 
 ### Explanation
 
-There are 3 params:
+There are 3 parameters:
 
 ##### Methods
 
@@ -61,7 +61,7 @@ It adds method to the instance that will return executor result
 
 Function that declares default context. It's optional parameter
 
-> **NOTE:** both methods and executors accepts context as additional last argument.
+> **NOTE:** both methods and executors accept context as additional last argument.
 
 ### Use instance
 
@@ -80,4 +80,33 @@ createFetch()
   .post("photos")
   .execute(form)
   .then(console.log)
+```
+
+### Additional
+
+#### getContext()
+
+Returns a shallow clone of context
+
+```js
+createFetch()
+  .post("photos")
+  .getContext() // => { url: '/photos', method: 'POST' }
+```
+
+#### clone()
+
+Clones current fluent interface
+
+```js
+const a = createFetch().post("photos")
+
+const b = a.clone()
+b.post("blog")
+
+b.getContext()
+// => { url: '/blog', method: 'POST' }
+
+a.getContext()
+// => { url: '/photos', method: 'POST' }
 ```
