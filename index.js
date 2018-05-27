@@ -20,7 +20,7 @@ const fluent = ({ methods, executors, defaults }) => () => {
       methods,
       executors,
       defaults: res.getContext
-    })
+    })()
 
   return res
 }
