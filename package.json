@@ -1,0 +1,9 @@
+{
+  "name": "schematic-fluent",
+  "version": "0.1.0",
+  "description": "Easily create fluent interfaces",
+  "main": "index.js",
+  "repository": "https://github.com/kelin2025/schematic-fluent",
+  "author": "Anton Kosykh <kelin2025@yandex.ru>",
+  "license": "MIT"
+}
