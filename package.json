@@ -1,6 +1,6 @@
 {
   "name": "schematic-fluent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Easily create fluent interfaces",
   "main": "index.js",
   "repository": "https://github.com/kelin2025/schematic-fluent",
