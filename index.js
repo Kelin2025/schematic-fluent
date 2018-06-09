@@ -1,6 +1,15 @@
-const fluent = ({ methods, executors, defaults }) => () => {
+const fluent = ({ methods, executors, flags, defaults }) => () => {
   const ctx = defaults ? defaults() : {}
   const res = {}
+
+  for (const [flag, cb] of Object.entries(flags)) {
+    Object.defineProperty(res, flag, {
+      get() {
+        cb(ctx)
+        return res
+      }
+    })
+  }
 
   for (const [method, cb] of Object.entries(methods)) {
     res[method] = (...args) => {
