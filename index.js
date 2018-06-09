@@ -5,7 +5,7 @@ const fluent = ({ methods, executors, flags, defaults }) => () => {
   for (const [flag, cb] of Object.entries(flags)) {
     Object.defineProperty(res, flag, {
       get() {
-        cb(ctx)
+        Object.assign(ctx, cb(ctx))
         return res
       }
     })
