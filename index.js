@@ -26,10 +26,22 @@ const fluent = ({ methods, executors, flags, defaults }) => () => {
 
   res.clone = () =>
     fluent({
+      flags,
       methods,
       executors,
       defaults: res.getContext
     })()
+
+  res.extend = extension =>
+    fluent({
+      flags: { ...flags, ...extension.flags },
+      methods: { ...methods, ...extension.methods },
+      executors: { ...executors, ...extension.executors },
+      defaults: () => ({
+        ...(defaults && defaults()),
+        ...(extension.defaults && extension.defaults())
+      })
+    })
 
   return res
 }
