@@ -27,14 +27,12 @@ const createFetch = fluent({
     paginate: () => (page, limit) => ({ page, limit })
   },
   executors: {
-    getOne: ({ url, method }) => id => 
-      fetch(`${url}/${id}`, { method: "GET" }),
+    getOne: ({ url, method }) => id => fetch(`${url}/${id}`, { method: "GET" }),
 
     getAll: ({ url, page, limit }) => () =>
       fetch(`${url}?page=${page}&limit=${limit}`),
 
-    execute: ({ url, method }) =>  body =>
-      fetch(url, { method, body })
+    execute: ({ url, method }) => body => fetch(url, { method, body })
   },
   defaults: () => ({
     page: 1,
@@ -107,4 +105,70 @@ b.getContext()
 
 a.getContext()
 // => { url: '/photos', method: 'POST' }
+```
+
+#### `immutable` flag (0.4.0+)
+
+You can add `immutable: true` for schema.  
+With this flag, each method called will clone fluent instance:
+
+```js
+const createFoo = fluent({
+  immutable: true,
+  methods: {
+    foo: () => foo => ({ foo })
+  }
+})
+
+const Root = createFoo()
+const Bar = root.foo("bar")
+
+Root.getContext() // => {}
+Bar.getContext() // { foo: 'bar' }
+```
+
+#### extend()
+
+You can extend fluent instances with new flags/methods/executors.
+
+```js
+const something = fluent({
+  methods: {
+    foo: () => foo => ({ foo })
+  }
+})
+
+const instance = something().foo("bar")
+
+const withBaz = instance.extend({
+  methods: {
+    baz: () => baz => ({ baz })
+  }
+})
+
+instance.baz("lol")
+instance.getContext() // => { foo: 'bar', baz: 'lol' }
+```
+
+#### Static extend (0.4.0+)
+
+Like previous `.extend()` but without initialized instance:
+
+```js
+const something = fluent({
+  methods: {
+    foo: () => foo => ({ foo })
+  }
+})
+
+const withBaz = something.extend({
+  methods: {
+    baz: () => baz => ({ baz })
+  }
+})
+
+withBaz()
+  .foo("bar")
+  .baz("lol")
+  .getContext() // => { foo: 'bar', baz: 'lol' }
 ```
