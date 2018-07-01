@@ -1,49 +1,71 @@
-const fluent = ({ methods, executors, flags, defaults }) => () => {
-  const ctx = defaults ? defaults() : {}
-  const res = {}
+const fluent = ({
+  flags = {},
+  methods = {},
+  defaults,
+  executors = {},
+  immutable = false
+}) => {
+  const createInstance = initContext => {
+    const ctx =
+      initContext !== undefined ? initContext : defaults ? defaults() : {}
+    const res = {}
 
-  for (const [flag, cb] of Object.entries(flags)) {
-    Object.defineProperty(res, flag, {
-      get() {
-        Object.assign(ctx, cb(ctx))
-        return res
+    const apply = diff => {
+      if (immutable) {
+        return res.clone(Object.assign(res.getContext(), diff))
       }
-    })
-  }
-
-  for (const [method, cb] of Object.entries(methods)) {
-    res[method] = (...args) => {
-      Object.assign(ctx, cb(ctx)(...args))
+      Object.assign(ctx, diff)
       return res
     }
+
+    for (const [flag, cb] of Object.entries(flags)) {
+      Object.defineProperty(res, flag, {
+        get() {
+          return apply(cb(ctx))
+        }
+      })
+    }
+
+    for (const [method, cb] of Object.entries(methods)) {
+      res[method] = (...args) => {
+        return apply(cb(ctx)(...args))
+      }
+    }
+
+    for (const [method, cb] of Object.entries(executors)) {
+      res[method] = (...args) => cb(ctx)(...args)
+    }
+
+    res.getContext = () => ({ ...ctx })
+
+    res.clone = newContext =>
+      fluent({
+        flags,
+        methods,
+        executors,
+        immutable,
+        defaults: res.getContext
+      })(newContext)
+
+    res.extend = extension =>
+      createInstance.extend({ ...extension, defaults: res.getContext })()
+
+    return res
   }
 
-  for (const [method, cb] of Object.entries(executors)) {
-    res[method] = (...args) => cb(ctx)(...args)
-  }
-
-  res.getContext = () => ({ ...ctx })
-
-  res.clone = () =>
-    fluent({
-      flags,
-      methods,
-      executors,
-      defaults: res.getContext
-    })()
-
-  res.extend = extension =>
+  createInstance.extend = extension =>
     fluent({
       flags: { ...flags, ...extension.flags },
       methods: { ...methods, ...extension.methods },
       executors: { ...executors, ...extension.executors },
+      immutable: "immutable" in extension ? extension.immutable : immutable,
       defaults: () => ({
         ...(defaults && defaults()),
         ...(extension.defaults && extension.defaults())
       })
     })
 
-  return res
+  return createInstance
 }
 
-export default fluent
+module.exports = fluent
