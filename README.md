@@ -10,13 +10,12 @@ $ yarn add schematic-fluent
 
 ## Usage
 
-### Create an instance
-
 Example with fetch wrapper
 
 ```js
 import fluent from "schematic-fluent"
 
+// Declare instance creator
 const createFetch = fluent({
   methods: {
     from: () => url => ({ url: `/${url}` }),
@@ -39,29 +38,8 @@ const createFetch = fluent({
     limit: 10
   })
 })
-```
 
-### Explanation
-
-There are 3 parameters:
-
-##### Methods
-
-Method is a function that accepts params and returns object that will be merged with context.  
-It adds fluent method to the instance (accepts options and returns the instance)
-
-##### Executors
-
-Executor is a function that accepts params and returns something.  
-It adds method to the instance that will return executor result
-
-##### Defaults
-
-Function that declares default context. It's optional parameter
-
-### Use instance
-
-```js
+// Usage:
 createFetch()
   .getOne(1)
   .then(console.log)
@@ -78,7 +56,29 @@ createFetch()
   .then(console.log)
 ```
 
-### Additional
+## Explanation
+
+There are 4 parameters:
+
+##### Methods
+
+Method is a function that accepts params and returns object that will be merged with context.  
+It adds fluent method to the instance (accepts options and returns the instance)
+
+##### Flags
+
+Same as **methods** but doesn't accept arguments
+
+##### Executors
+
+Executor is a function that accepts params and returns something.  
+It adds method to the instance that will return executor result
+
+##### Defaults
+
+Function that declares default context
+
+## Additional
 
 #### getContext()
 
@@ -105,26 +105,6 @@ b.getContext()
 
 a.getContext()
 // => { url: '/photos', method: 'POST' }
-```
-
-#### `immutable` flag (0.4.0+)
-
-You can add `immutable: true` for schema.  
-With this flag, each method called will clone fluent instance:
-
-```js
-const createFoo = fluent({
-  immutable: true,
-  methods: {
-    foo: () => foo => ({ foo })
-  }
-})
-
-const Root = createFoo()
-const Bar = root.foo("bar")
-
-Root.getContext() // => {}
-Bar.getContext() // { foo: 'bar' }
 ```
 
 #### extend()
@@ -171,4 +151,24 @@ withBaz()
   .foo("bar")
   .baz("lol")
   .getContext() // => { foo: 'bar', baz: 'lol' }
+```
+
+#### `immutable` flag (0.4.0+)
+
+You can add `immutable: true` for schema.  
+With this flag, each method called will clone fluent instance:
+
+```js
+const createFoo = fluent({
+  immutable: true,
+  methods: {
+    foo: () => foo => ({ foo })
+  }
+})
+
+const Root = createFoo()
+const Bar = root.foo("bar")
+
+Root.getContext() // => {}
+Bar.getContext() // { foo: 'bar' }
 ```
