@@ -172,3 +172,19 @@ const Bar = root.foo("bar")
 Root.getContext() // => {}
 Bar.getContext() // { foo: 'bar' }
 ```
+
+#### High-ordered flags/methods (0.5.0+)
+
+You can add shortcuts for existed methods by calling methods from 2nd argument  
+2nd argument has `flag` and `method` callbacks which call choosed method with options
+
+```js
+fluent({
+  methods: {
+    foo: () => foo => ({ foo })
+  },
+  flags: {
+    withBar: ({ foo }, { method }) => method("foo", foo + "bar")
+  }
+})
+```

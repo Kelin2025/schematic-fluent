@@ -18,17 +18,28 @@ const fluent = ({
       return res
     }
 
+    const additional = {
+      flag: flag => {
+        res[flag]
+        return {}
+      },
+      method: method => (...args) => {
+        res[method](...args)
+        return {}
+      }
+    }
+
     for (const [flag, cb] of Object.entries(flags)) {
       Object.defineProperty(res, flag, {
         get() {
-          return apply(cb(ctx, res))
+          return apply(cb(ctx, additional))
         }
       })
     }
 
     for (const [method, cb] of Object.entries(methods)) {
       res[method] = (...args) => {
-        return apply(cb(ctx, res)(...args))
+        return apply(cb(ctx, additional)(...args))
       }
     }
 
